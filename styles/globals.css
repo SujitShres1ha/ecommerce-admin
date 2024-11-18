@@ -13,9 +13,29 @@
     --foreground: #ededed;
   }
 }
+  
+
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+table tr td {
+  @apply border border-solid border-black;
+}
+
+table a{
+  @apply text-white inline-flex gap-1 m-1 px-2 py-1 rounded-md;
+}
+
+.button-primary{
+  @apply text-white bg-primary-blue p-2 rounded-md font-bold
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+}
+
