@@ -22,16 +22,24 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-table tr td {
-  @apply border border-solid border-black;
+table {
+  @apply my-4 shadow-sm rounded-lg overflow-hidden bg-gray-100;
 }
 
-table a{
-  @apply text-white inline-flex gap-1 m-1 px-2 py-1 rounded-md;
+table thead {
+  @apply text-gray-700 bg-gray-200;
+}
+
+table th, table td {
+  @apply px-4 py-2 border border-solid border-gray-400;
+}
+
+table a {
+  @apply text-white inline-flex gap-1 m-1 px-2 py-1 rounded-md bg-blue-500;
 }
 
 .button-primary{
-  @apply text-white bg-primary-blue p-2 rounded-md font-bold
+  @apply text-white bg-primary-blue px-5 py-2 rounded-md font-bold
 }
 
 body {

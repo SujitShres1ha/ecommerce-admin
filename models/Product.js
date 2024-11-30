@@ -1,4 +1,4 @@
-const { Schema, model, models } = require("mongoose");
+import { Schema, model, models } from "mongoose";
 
 const productSchema = new Schema({
   name: {
@@ -11,7 +11,10 @@ const productSchema = new Schema({
   price: {
     type: Number,
     required: true
-  }
+  },
+  images: [{
+    type: String
+  }]
 })
 
 export const productModel = models.Product || model('Product',productSchema)

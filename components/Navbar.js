@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShoppingBagIcon, LayoutDashboardIcon, StoreIcon, LayoutListIcon } from "lucide-react";
+import { ShoppingBagIcon, LayoutDashboardIcon, StoreIcon, LayoutListIcon, ListIcon } from "lucide-react";
 import { useRouter } from "next/router";
 
 export default function Navbar(){
@@ -18,21 +18,27 @@ export default function Navbar(){
       </Link>
       <nav className=" flex flex-col">
         <Link href = '/' className={ pathname === '/' ? activeLink : inactiveLink }>
-          <LayoutDashboardIcon fill={ pathname === '/' ? "#3B82F6" : ""} fillOpacity={1} strokeWidth={1}/>
+          <LayoutDashboardIcon fill={ pathname === '/' ? "#3B82F6" : ""} fillOpacity={1} strokeWidth={1.5}/>
           <span>
             Dashboard
           </span>
         </Link>
-        <Link href = '/orders' className={ pathname.includes('/orders') ? activeLink : inactiveLink }>
-          <ShoppingBagIcon fill={ pathname.includes('/orders') ? "#3B82F6" : ""} fillOpacity = {0.5} strokeWidth={1}/>
+        <Link href = '/categories' className={ pathname.includes('/categories') ? activeLink : inactiveLink }>
+          <ListIcon fill={ pathname === '/categories' ? "#3B82F6" : ""} fillOpacity={1} strokeWidth={1.5}/>
           <span>
-            Orders
+            Categories
           </span>
         </Link>
         <Link href = '/products' className={ pathname.includes('/products') ? activeLink : inactiveLink }>
-          <LayoutListIcon fill={ pathname.includes('/products') ? "#3B82F6" : ""} fillOpacity={1} strokeWidth={1}/>
+          <LayoutListIcon fill={ pathname.includes('/products') ? "#3B82F6" : ""} fillOpacity={1} strokeWidth={1.5}/>
           <span>
             Products
+          </span>
+        </Link>
+        <Link href = '/orders' className={ pathname.includes('/orders') ? activeLink : inactiveLink }>
+          <ShoppingBagIcon fill={ pathname.includes('/orders') ? "#3B82F6" : ""} fillOpacity = {0.5} strokeWidth={1.5}/>
+          <span>
+            Orders
           </span>
         </Link>
       </nav>

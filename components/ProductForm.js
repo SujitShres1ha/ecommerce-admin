@@ -1,47 +1,51 @@
 import Layout from "@/components/Layout";
 import axios from "axios";
-import { PackageSearchIcon } from "lucide-react";
-import { useState } from "react";
+import { PackageSearchIcon, LoaderIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { ReactSortable } from "react-sortablejs";
+import Image from "next/image";
+
+
 export default function ProductForm({
-  _id,
   name: existingName,
   description: existingDescription, 
-  price: existingPrice}){
-  const [name, setName] = useState(existingName || null);
-  const [description, setDescription] = useState(existingDescription || null);
-  const [price, setPrice] = useState(existingPrice || null);
-  const router = useRouter();
+  price: existingPrice,
+  images: existingImages
+}){
+  const [name, setName] = useState(existingName || "");
+  const [description, setDescription] = useState(existingDescription || "");
+  const [price, setPrice] = useState(existingPrice || "");
+  const [images, setImages] = useState(existingImages || []);
+  const [isUploading, setIsUploading] = useState(false);
+  const router = useRouter()
 
-  async function handleSubmit(e){
-    e.preventDefault();
-    if (_id){
-      const response = await axios.put('/api/products',{_id,name,description,price})
-      console.log("Response: ", response)
-    }
-    else{
-      const response = await axios.post('/api/products', {name,description,price})
-      console.log("Response: ", response)
-    }
-    router.push('/products');
-  }
-
-  async function uploadFile(e){
-    e.preventDefault();
-    const data = new FormData()
-    const files = e.target?.files
-    for (const file of files){
-      data.append('file',file)
-    }
-    const res = await axios.post('/api/upload',data, {
+  const uploadFile = async (e) => {
+    const files = Array.from(e.target.files)
+    const formData = new FormData()
+    files.map(file => formData.append("file",file))
+    setIsUploading(true)
+    const res = await axios.post('/api/upload',formData,{
       headers: {
         'Content-Type': 'multipart/form-data'
       }
-    });
-    console.log(res.data);
+    })
+    if (res.data){
+      setImages(prevImgs => [...prevImgs,...res.data.links])
+      setIsUploading(false)
+    }
+  } 
+
+  const handleSubmit = async (e) => {
+    const id = router.query.id
+    console.log(id)
+    e.preventDefault()
+    const res = id ? await axios.put('/api/products',{_id: id,name,description,price,images}) : await axios.post('/api/products',{name,description,price,images}) 
+    console.log(res.data)
+    router.push('/products')
   }
   return (
-    <form onSubmit = {handleSubmit} className="m-4 flex flex-col gap-2">
+    <form onSubmit = {(e) => handleSubmit(e)} className="m-4 flex flex-col gap-2">
       <div>
         <div className = "flex gap-2 items-center">
           <PackageSearchIcon className="h-5"/>
@@ -63,16 +67,24 @@ export default function ProductForm({
         <div className=" flex flex-col gap-1">
           <span>Photos</span>
           <label className="w-24 h-24 border border-black flex items-center justify-center text-sm gap-1 rounded-md bg-slate-200 hover: cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" 
-                stroke-linejoin="round" 
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" 
+                strokeLinejoin="round" 
                 d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
             </svg>
             Upload
-            <input type="file" className="hidden" onChange={uploadFile}/>
+            <input type="file" className="hidden" onChange={uploadFile} multiple/>
           </label>
+          {!images?.length && <span className="font-thin text-xs">(No images uploaded)</span>}
           
-          
+        </div>
+        <div className="flex gap-2 flex-grow">
+          <ReactSortable list={images} setList={setImages} className="flex gap-2" animation={300} easing="ease-in-out">
+            { images && images.map((link, index) =>
+              (<img className="rounded-lg h-24 w-24" src={link} key={index} alt={`Image ${index}`} />))
+            }
+          </ReactSortable>
+          { isUploading && <div className="flex items-center"><LoaderIcon className="animate-spin"/></div>}
         </div>
         <div className = "flex flex-col w-52 gap-1">
           <span>Product Description</span>
