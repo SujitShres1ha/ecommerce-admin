@@ -39,7 +39,11 @@ table a {
 }
 
 .button-primary{
-  @apply text-white bg-primary-blue px-5 py-2 rounded-md font-bold
+  @apply text-white bg-teal-500 px-5 py-2 rounded-md font-bold
+}
+
+.button-secondary{
+  @apply text-white bg-orange-500 px-5 py-2 rounded-md font-bold
 }
 
 body {

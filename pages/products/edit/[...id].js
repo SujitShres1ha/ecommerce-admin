@@ -8,7 +8,6 @@ export default function EditProduct(){
   const [productDetails, setProductDetails] = useState(null);
   const router = useRouter()
   const {id} = router.query;
-
   useEffect(() => {
     if (id){
       axios.get('/api/products?id='+id).then((response) => {setProductDetails(response.data)} )

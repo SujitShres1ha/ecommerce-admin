@@ -11,15 +11,21 @@ export default function ProductForm({
   name: existingName,
   description: existingDescription, 
   price: existingPrice,
-  images: existingImages
+  images: existingImages,
+  category: assignedCategory
 }){
   const [name, setName] = useState(existingName || "");
   const [description, setDescription] = useState(existingDescription || "");
   const [price, setPrice] = useState(existingPrice || "");
   const [images, setImages] = useState(existingImages || []);
   const [isUploading, setIsUploading] = useState(false);
+  const [categories, setCategories] = useState([])
+  const [category,setCategory] = useState(assignedCategory || '')
   const router = useRouter()
-
+  console.log(categories)
+  useEffect(() => {
+    axios.get('/api/categories').then(res => setCategories([...res.data]))
+  },[])
   const uploadFile = async (e) => {
     const files = Array.from(e.target.files)
     const formData = new FormData()
@@ -37,10 +43,9 @@ export default function ProductForm({
   } 
 
   const handleSubmit = async (e) => {
-    const id = router.query.id
-    console.log(id)
+    const _id = router.query.id
     e.preventDefault()
-    const res = id ? await axios.put('/api/products',{_id: id,name,description,price,images}) : await axios.post('/api/products',{name,description,price,images}) 
+    const res = _id ? await axios.put('/api/products',{_id,name,description,price,images,category}) : await axios.post('/api/products',{name,description,price,images,category}) 
     console.log(res.data)
     router.push('/products')
   }
@@ -85,6 +90,15 @@ export default function ProductForm({
             }
           </ReactSortable>
           { isUploading && <div className="flex items-center"><LoaderIcon className="animate-spin"/></div>}
+        </div>
+        <div className = "flex flex-col w-60 gap-1">
+          <span>Product Category</span>
+          <select className="p-2 rounded-md text-sm" onChange={e => setCategory(e.target.value)} value={category}>
+            <option value="">Uncategorized (Select Category)</option>
+            {categories && categories.map((category) => {
+              return (<option key={category._id} value={category._id}>{category.name}</option>)
+            })}
+          </select>
         </div>
         <div className = "flex flex-col w-52 gap-1">
           <span>Product Description</span>
