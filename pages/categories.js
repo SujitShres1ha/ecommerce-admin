@@ -1,7 +1,7 @@
 
 import Layout from "@/components/Layout";
 import axios from "axios";
-import { CircleChevronDownIcon, CopySlashIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { CircleChevronDownIcon, CopySlashIcon, PencilIcon, Trash2Icon, TrashIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 export default function Categories(){
   const [category, setCategory] = useState({})
@@ -12,6 +12,7 @@ export default function Categories(){
   const [activeIcon, setActiveIcon] = useState(null)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [deleteDialogBox, setDeleteDialogBox] = useState(false);
+  const [properties, setProperties] = useState([])
 
   const nameRef = useRef("")
   const ActionButtons = ({category}) => (
@@ -24,7 +25,7 @@ export default function Categories(){
       </div>
     </td>
   )
-  
+
   const handleDelete = async () => {
 
     const res = await axios.delete('/api/categories?id='+category._id)
@@ -38,24 +39,47 @@ export default function Categories(){
     nameRef.current.focus() //focus Input
     setCategory(category)
     setParentCategory(category.parent)
+    setProperties(category.properties)
    
   }
+ 
+  const handleNameChange = (property, index, newName) => {
+    setProperties(prev => {
+      const props = [...prev]
+      props[index].name = newName
+      return props
+    })
+  }
 
+  const handleValuesChange = (property, index, newValues) => {
+    setProperties(prev => {
+      const props = [...prev]
+      props[index].values = newValues.split(',')
+      return props
+    })
+  }
+
+  const removeProperty = (index_num) => {
+    setProperties(props => props.filter((prop, index) => index !== index_num))
+  }
   const cancelEdit = () => {
     setCategory({})
     setParentCategory(0)
     setIsEditOpen(false)
+    setProperties([])
   }
   const saveCategory = async () => {
     const [name, parent, _id] = [category.name, category.parent, category._id]
     console.log(name,parent,_id)
     if (category._id){
-      const res = await axios.put('/api/categories',{name,parent,_id})
+      const res = await axios.put('/api/categories',{name,parent,_id,properties})
     }else{
-      const res = await axios.post('/api/categories',{name, parent: parentCategory})
+      const res = await axios.post('/api/categories',{name, parent: parentCategory, properties})
     }
     setCategory({})
-    setParentCategory(0)
+    setParentCategory('')
+    setProperties([])
+    setIsEditOpen(false)
     fetchCategories()
   }
   const toggleCategory = (id) => {
@@ -75,7 +99,7 @@ export default function Categories(){
   return (
   <Layout className="">    
     <div className="m-4 flex flex-col gap-2">
-      <div className="flex gap-2 font-bold text-lg items-center">
+      <div className="flex gap-2 font-bold text-lg">
         <CopySlashIcon/>
         <span>Product Categories</span>
       </div>
@@ -90,13 +114,28 @@ export default function Categories(){
           onChange={(e) => parentCategory ? setParentCategory(e.target.value) : setCategory(prev => ({...prev, name: e.target.value}))}
         />
         <select className="rounded-md text-gray-500 p-2" value={parentCategory} onChange={e => setParentCategory(e.target.value)}>
-          <option value={0}>Select Parent Category</option>
+          <option value={''}>Select Parent Category</option>
           {mainCategories.length > 0 && mainCategories.map((category) => (
             <option key={category._id} value={category._id}>{category.name}</option>
           ))}
         </select>
-        <button onClick = {saveCategory} className="button-primary">{isEditOpen ? 'Save' : 'Add'}</button>
-        {isEditOpen && <button onClick = {cancelEdit} className="button-secondary">Cancel</button>}
+      </div>
+      <label className="block">Product Properties</label>
+      <button 
+        className="button-primary text-sm bg-gray-500 w-fit"
+        type="button"
+        onClick = {() => setProperties(prev => [...prev, {name:'', values:''}])}
+      >Add new property</button>
+        {properties.length > 0 && properties.map((property, index) => (
+          <div className="flex gap-2 font-extralight text-sm">
+            <input type="text" value={property.name} onChange={e => handleNameChange(property,index,e.target.value)} placeholder="Enter property name" className="rounded-md px-2 py-1"/>
+            <input type="text" value={property.values} onChange={e => handleValuesChange(property,index,e.target.value)} placeholder="Enter values (comma separated)" className="rounded-md px-2 py-1 w-56"/>
+            <button onClick={() => removeProperty(index)} className="bg-red-600 inline-flex items-center px-1 gap-2 rounded-md text-white"><TrashIcon size={16} fill="white" strokeWidth={5}/></button>
+          </div>
+        ))}
+        <div className="flex gap-2 mt-2 text-sm">
+        <button onClick = {saveCategory} className="button-primary bg-teal-500">{isEditOpen ? 'Save' : 'Add'}</button>
+        {isEditOpen && <button onClick = {cancelEdit} className="button-primary bg-orange-700">Cancel</button>}
       </div>
       {mainCategories.length > 0 && <table className="border border-black rounded-md">
         <thead>

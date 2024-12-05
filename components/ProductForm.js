@@ -4,7 +4,7 @@ import { PackageSearchIcon, LoaderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ReactSortable } from "react-sortablejs";
-import Image from "next/image";
+
 
 
 export default function ProductForm({
@@ -12,7 +12,8 @@ export default function ProductForm({
   description: existingDescription, 
   price: existingPrice,
   images: existingImages,
-  category: assignedCategory
+  category: assignedCategory,
+  properties: assignedProps
 }){
   const [name, setName] = useState(existingName || "");
   const [description, setDescription] = useState(existingDescription || "");
@@ -21,11 +22,36 @@ export default function ProductForm({
   const [isUploading, setIsUploading] = useState(false);
   const [categories, setCategories] = useState([])
   const [category,setCategory] = useState(assignedCategory || '')
+  const [properties, setProperties] = useState([])
+  const [productProps, setProductProps] = useState(assignedProps || {})
+  
   const router = useRouter()
-  console.log(categories)
   useEffect(() => {
     axios.get('/api/categories').then(res => setCategories([...res.data]))
   },[])
+
+  useEffect(() => {
+    if (categories.length > 0 && category){
+      const props = []
+      const catInfo = categories.find(({_id}) => _id === category)
+      catInfo.properties.length > 0 && props.push(...catInfo.properties)
+      if (catInfo?.parent){
+        props.unshift(...categories.find(({_id}) => _id === catInfo.parent).properties)
+      }
+      setProperties([...props])
+
+      //default property values
+      const defaultProps = {}
+      for (const prop of props){
+        defaultProps[prop.name] = prop.values[0]
+      }
+      setProductProps(defaultProps)
+    }
+
+    
+    
+  },[category, categories])
+  console.log(productProps)
   const uploadFile = async (e) => {
     const files = Array.from(e.target.files)
     const formData = new FormData()
@@ -41,11 +67,15 @@ export default function ProductForm({
       setIsUploading(false)
     }
   } 
-
+  const setProductProp = (value, name) =>
+  setProductProps((prevProps) => ({
+    ...prevProps,
+    [name]: value
+  }))
   const handleSubmit = async (e) => {
     const _id = router.query.id
     e.preventDefault()
-    const res = _id ? await axios.put('/api/products',{_id,name,description,price,images,category}) : await axios.post('/api/products',{name,description,price,images,category}) 
+    const res = _id ? await axios.put('/api/products',{_id,name,description,price,images,category,properties: productProps}) : await axios.post('/api/products',{name,description,price,images,category,properties: productProps}) 
     console.log(res.data)
     router.push('/products')
   }
@@ -93,13 +123,35 @@ export default function ProductForm({
         </div>
         <div className = "flex flex-col w-60 gap-1">
           <span>Product Category</span>
-          <select className="p-2 rounded-md text-sm" onChange={e => setCategory(e.target.value)} value={category}>
+          <select 
+            className="p-2 rounded-md text-sm" 
+            onChange={e => setCategory(e.target.value)} 
+            value={category}>
             <option value="">Uncategorized (Select Category)</option>
             {categories && categories.map((category) => {
               return (<option key={category._id} value={category._id}>{category.name}</option>)
             })}
           </select>
         </div>
+        {properties.length > 0 && (
+          <div className = "flex flex-col w-60 gap-1">
+          <span>Product Properties</span>
+            {properties && properties.map((prop) => {
+              return (
+                <div key={prop._id} className = "flex flex-row items-center gap-2">
+                <span className="w-1/4">{prop.name[0].toUpperCase() + prop.name.substring(1)}</span>
+                <select 
+                  className="rounded-md px-0.5"
+                  onChange={(e) => setProductProp(e.target.value,prop.name)} 
+                  value={productProps[prop.name] || prop.values[0]}>
+                  {prop.values.map((value) => (
+                    <option key={value} value={value}>{value}</option>
+                  ))}
+                </select>
+                </div>)
+            })}
+        </div>
+        )}
         <div className = "flex flex-col w-52 gap-1">
           <span>Product Description</span>
           <input

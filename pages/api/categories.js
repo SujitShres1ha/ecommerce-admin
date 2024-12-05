@@ -4,13 +4,13 @@ import { categoryModel } from "@/models/Category"
 export default async function handle(req,res){
   await dbConnect();
   if (req.method === 'PUT'){
-    const {name, parent, _id} = req.body
-    const response = await categoryModel.updateOne({_id},{name,parent})
+    const {name, parent, _id, properties} = req.body
+    const response = await categoryModel.updateOne({_id},{name,parent,properties})
     return res.json(response)
   }
   if (req.method === 'POST'){
-    const {name, parent} = req.body
-    const response = await categoryModel.create({name, parent})
+    const {name, parent, properties} = req.body
+    const response = await categoryModel.create({name, parent, properties})
     return res.json(response)
   }
   if (req.method === 'GET'){
