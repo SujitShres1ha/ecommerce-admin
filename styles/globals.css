@@ -35,7 +35,7 @@ table tr td{
 }
 
 input, select {
-  @apply pl-1.5 py-0.5 rounded-sm text-sm 
+  @apply pl-1.5 py-1 rounded-sm text-sm 
 }
 
 tr td a, tr td button{

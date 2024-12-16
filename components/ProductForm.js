@@ -123,7 +123,6 @@ export default function ProductForm({
         <div className = "flex flex-col w-60 gap-1">
           <span>Product Category</span>
           <select 
-            className="p-2 rounded-md text-sm" 
             onChange={e => setCategory(e.target.value)} 
             value={category}>
             <option value="">Uncategorized (Select Category)</option>
@@ -140,7 +139,6 @@ export default function ProductForm({
                 <div key={prop._id} className = "flex flex-row items-center gap-2">
                 <span className="w-1/4 text-sm">{prop.name[0].toUpperCase() + prop.name.substring(1)}</span>
                 <select 
-                  className="rounded-md px-0.5 text-sm"
                   onChange={(e) => setProductProp(e.target.value,prop.name)} 
                   value={productProps[prop.name] || prop.values[0]}>
                   {prop.values.map((value) => (
