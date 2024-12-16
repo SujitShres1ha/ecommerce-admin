@@ -32,10 +32,10 @@ export default function Products(){
     <Layout children={'products page'}>
       <div className="flex flex-col m-4 gap-4">
         <div className="">
-          <Link href='/products/new' className="button-primary">Add Product</Link>
+          <Link href='/products/new' className="button-primary bg-teal-500">Add Product</Link>
         </div>
         <div>
-          <table className="border border-black rounded-md">
+          <table>
             <thead>
               <tr>
                 <td>Product Name</td>
@@ -47,12 +47,12 @@ export default function Products(){
                 <tr key={item._id}>
                   <td>{item.name}</td>
                   <td>
-                    <Link href = {'products/edit/'+item._id} className="items-center align-middle bg-primary-blue">
-                      <PencilIcon size={18} fill="blue"/>
+                    <Link href = {'products/edit/'+item._id} className="bg-primary-blue">
+                      <PencilIcon size={15} fill="blue"/>
                       Edit
                     </Link>
-                    <button onClick={() => openDeleteBox(item)} className="items-center align-middle bg-red-500 px-2 rounded-md text-white inline-flex py-1 gap-1 m-1">
-                      <Trash2Icon size={18} fill="red"/>
+                    <button onClick={() => openDeleteBox(item)} className="bg-red-500">
+                      <Trash2Icon size={15} fill="red"/>
                       Delete
                     </button>  
                   </td>

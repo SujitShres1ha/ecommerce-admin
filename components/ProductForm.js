@@ -95,7 +95,6 @@ export default function ProductForm({
             type="text"
             placeholder="Enter Product Name"
             value={name}
-            className="p-1 rounded-md"
             onChange = {e => setName(e.target.value)}
           />
         </div>
@@ -139,9 +138,9 @@ export default function ProductForm({
             {properties && properties.map((prop) => {
               return (
                 <div key={prop._id} className = "flex flex-row items-center gap-2">
-                <span className="w-1/4">{prop.name[0].toUpperCase() + prop.name.substring(1)}</span>
+                <span className="w-1/4 text-sm">{prop.name[0].toUpperCase() + prop.name.substring(1)}</span>
                 <select 
-                  className="rounded-md px-0.5"
+                  className="rounded-md px-0.5 text-sm"
                   onChange={(e) => setProductProp(e.target.value,prop.name)} 
                   value={productProps[prop.name] || prop.values[0]}>
                   {prop.values.map((value) => (
@@ -157,7 +156,7 @@ export default function ProductForm({
           <input
             type="text"
             placeholder="Enter Product Description"
-            className="p-1 rounded-md"
+            className=""
             value={description}
             onChange =  {e => setDescription(e.target.value)}
           />
@@ -168,7 +167,7 @@ export default function ProductForm({
             type="number"
             min = "0.00"
             placeholder="$ 0.00"
-            className="p-1 rounded-md"
+            className=""
             value={price}
             onChange =  {e => setPrice(e.target.value)}
           />

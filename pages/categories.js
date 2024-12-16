@@ -16,14 +16,12 @@ export default function Categories(){
 
   const nameRef = useRef("")
   const ActionButtons = ({category}) => (
-    <td>
-      <div className="flex gap-2 text-white">
-      <button onClick={() => editCategory(category)} className="bg-primary-blue inline-flex items-center px-2 py-1 gap-2 rounded-lg"><PencilIcon size={18} fill="blue"/>
+      <td>
+      <button onClick={() => editCategory(category)} className="bg-primary-blue"><PencilIcon size={15} fill="blue"/>
             Edit</button>
-      <button onClick={() => {setCategory(category); setDeleteDialogBox(true)}} className="bg-red-500 inline-flex items-center px-2 gap-2 rounded-lg"><Trash2Icon size={18} fill="red"/>
+      <button onClick={() => {setCategory(category); setDeleteDialogBox(true)}} className="bg-red-500"><Trash2Icon size={15} fill="red"/>
             Delete</button>
-      </div>
-    </td>
+      </td>
   )
 
   const handleDelete = async () => {
@@ -109,11 +107,10 @@ export default function Categories(){
           type="text" 
           ref={nameRef}
           placeholder="Enter Category Name" 
-          className="rounded-md px-2 py-0.5 -ml-0.5"
           value={category?.name ? category.name : ""}
           onChange={(e) => parentCategory ? setParentCategory(e.target.value) : setCategory(prev => ({...prev, name: e.target.value}))}
         />
-        <select className="rounded-md text-gray-500 p-2" value={parentCategory} onChange={e => setParentCategory(e.target.value)}>
+        <select value={parentCategory} onChange={e => setParentCategory(e.target.value)}>
           <option value={''}>Select Parent Category</option>
           {mainCategories.length > 0 && mainCategories.map((category) => (
             <option key={category._id} value={category._id}>{category.name}</option>
@@ -128,8 +125,8 @@ export default function Categories(){
       >Add new property</button>
         {properties.length > 0 && properties.map((property, index) => (
           <div className="flex gap-2 font-extralight text-sm">
-            <input type="text" value={property.name} onChange={e => handleNameChange(property,index,e.target.value)} placeholder="Enter property name" className="rounded-md px-2 py-1"/>
-            <input type="text" value={property.values} onChange={e => handleValuesChange(property,index,e.target.value)} placeholder="Enter values (comma separated)" className="rounded-md px-2 py-1 w-56"/>
+            <input type="text" value={property.name} onChange={e => handleNameChange(property,index,e.target.value)} placeholder="Enter property name"/>
+            <input type="text" value={property.values} onChange={e => handleValuesChange(property,index,e.target.value)} placeholder="Enter values (comma separated)" className="w-56"/>
             <button onClick={() => removeProperty(index)} className="bg-red-600 inline-flex items-center px-1 gap-2 rounded-md text-white"><TrashIcon size={16} fill="white" strokeWidth={5}/></button>
           </div>
         ))}
@@ -137,10 +134,11 @@ export default function Categories(){
         <button onClick = {saveCategory} className="button-primary bg-teal-500">{isEditOpen ? 'Save' : 'Add'}</button>
         {isEditOpen && <button onClick = {cancelEdit} className="button-primary bg-orange-700">Cancel</button>}
       </div>
-      {mainCategories.length > 0 && <table className="border border-black rounded-md">
+      {mainCategories.length > 0 && <table>
         <thead>
           <tr>
             <td>Category Name</td>
+            <td></td>
           </tr>
         </thead>
         <tbody>
@@ -148,16 +146,17 @@ export default function Categories(){
             <React.Fragment key={category._id}>
               <tr key={category._id}>
                 <td>
-                  <div className="inline-flex gap-2 items-center">
-                    <CircleChevronDownIcon onClick={() => toggleCategory(category._id)} className={`cursor-pointer h-4 w-4 ${activeIcon === category._id ? "fill-slate-300" : ""}`}/>
-                    <span>{category.name}</span>
-                  </div>
+                    <div className="flex gap-1 items-center">
+                      <CircleChevronDownIcon onClick={() => toggleCategory(category._id)} className={`cursor-pointer ${activeIcon === category._id ? "fill-slate-300" : ""}`} size={15}/>
+                      <span>{category.name}</span>
+                    </div>
                 </td>
-                <ActionButtons category = {category}/>          
+                <ActionButtons category = {category}/>    
+     
               </tr>
               {expandedCategories[category._id] && childCategories.map((childCategory => {
               if (childCategory.parent === category._id){
-                return (<tr><td className="pl-8 text-gray-700">{childCategory.name}</td><ActionButtons category={childCategory}/></tr>)
+                return (<tr><td className="pl-7">{childCategory.name}</td><ActionButtons category={childCategory}/></tr>)
               }}))}
             </React.Fragment>
           )}

@@ -23,23 +23,26 @@ body {
 }
 
 table {
-  @apply my-4 shadow-sm rounded-lg overflow-hidden bg-gray-100;
+  @apply mt-4 shadow-md overflow-hidden bg-gray-100 text-sm w-full rounded-sm;
 }
 
-table thead {
-  @apply text-gray-700 bg-gray-200;
+table thead tr td{
+  @apply text-gray-700 uppercase border-b border-gray-300;
 }
 
-table th, table td {
-  @apply px-4 py-2 border border-solid border-gray-400;
+table tr td{
+  @apply px-2 py-1
 }
 
-table a {
-  @apply text-white inline-flex gap-1 m-1 px-2 py-1 rounded-md bg-blue-500;
+input, select {
+  @apply pl-1.5 py-0.5 rounded-sm text-sm 
 }
 
+tr td a, tr td button{
+  @apply items-center align-middle text-white inline-flex gap-1 m-1 px-2 py-1 rounded-md text-xs
+}
 .button-primary{
-  @apply text-white px-5 py-1.5 rounded-md font-bold
+  @apply text-white px-3 py-1 rounded-md font-bold
 }
 
 

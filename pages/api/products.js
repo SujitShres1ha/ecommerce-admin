@@ -1,7 +1,9 @@
 import dbConnect from "@/lib/dbConnect";
 import { productModel } from "@/models/Product";
+import { isAdmin } from "./auth/[...nextauth]";
 
 export default async function handle(req,res){
+  await isAdmin(req,res);
   await dbConnect();
   if (req.method === 'POST'){
     const {name, description, price, images, properties, category} = req.body;

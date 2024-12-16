@@ -1,7 +1,9 @@
 import dbConnect from "@/lib/dbConnect"
 import { categoryModel } from "@/models/Category"
+import { isAdmin } from "./auth/[...nextauth]";
 
 export default async function handle(req,res){
+  await isAdmin(req,res);
   await dbConnect();
   if (req.method === 'PUT'){
     const {name, parent, _id, properties} = req.body
