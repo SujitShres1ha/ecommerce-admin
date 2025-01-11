@@ -112,10 +112,14 @@ export default function ProductForm({
           {!images?.length && <span className="font-thin text-xs">(No images uploaded)</span>}
           
         </div>
-        <div className="flex gap-2 flex-grow">
-          <ReactSortable list={images} setList={setImages} className="flex gap-2" animation={300} easing="ease-in-out">
-            { images && images.map((link, index) =>
-              (<img className="rounded-lg h-24 w-24" src={link} key={index} alt={`Image ${index}`} />))
+        <div className="flex gap-2 flex-wrap">
+          <ReactSortable list={images} setList={setImages} className="flex flex-wrap gap-2" animation={300} easing="ease-in-out">
+            { images.length && images.map((link, index) =>
+              (
+              <div key={index} className="h-24 w-24 bg-white shadow-sm rounded-sm border border-gray-200 overflow-hidden flex justify-center">
+                <img className="object-contain" src={link} alt={`Image ${index}`} />
+              </div>
+              ))
             }
           </ReactSortable>
           { isUploading && <div className="flex items-center"><LoaderIcon className="animate-spin"/></div>}
