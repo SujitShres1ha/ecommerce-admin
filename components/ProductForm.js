@@ -13,7 +13,8 @@ export default function ProductForm({
   price: existingPrice,
   images: existingImages,
   category: assignedCategory,
-  properties: assignedProps
+  properties: assignedProps,
+  stock: existingStock
 }){
   const [name, setName] = useState(existingName || "");
   const [description, setDescription] = useState(existingDescription || "");
@@ -24,6 +25,7 @@ export default function ProductForm({
   const [category,setCategory] = useState(assignedCategory || '')
   const [properties, setProperties] = useState([])
   const [productProps, setProductProps] = useState(assignedProps || {})
+  const [productStock, setProductStock] = useState(existingStock || null)
   
   const router = useRouter()
   useEffect(() => {
@@ -75,7 +77,7 @@ export default function ProductForm({
   const handleSubmit = async (e) => {
     const _id = router.query.id
     e.preventDefault()
-    const res = _id ? await axios.put('/api/products',{_id,name,description,price,images,category,properties: productProps}) : await axios.post('/api/products',{name,description,price,images,category,properties: productProps}) 
+    const res = _id ? await axios.put('/api/products',{_id,name,description,price,images,category,properties: productProps, stock: productStock}) : await axios.post('/api/products',{name,description,price,images,category,properties: productProps, stock: productStock}) 
     console.log(res.data)
     router.push('/products')
   }
@@ -161,6 +163,16 @@ export default function ProductForm({
             className=""
             value={description}
             onChange =  {e => setDescription(e.target.value)}
+          />
+        </div>
+        <div className = "flex flex-col w-52 gap-1">
+          <span>Product Stock</span>
+          <input
+            type="number"
+            placeholder="Enter Product Stock"
+            className=""
+            value={productStock}
+            onChange =  {e => setProductStock(e.target.value)}
           />
         </div>
         <div className = "flex flex-col w-52 gap-1">
