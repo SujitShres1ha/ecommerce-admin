@@ -6,10 +6,11 @@ export default async function handle(req, res) {
   await isAdmin(req, res);
   await dbConnect();
   if (req.method === "POST") {
-    const { name, description, price, images, properties, category, stock } =
+    const { name, title, description, price, images, properties, category, stock } =
       req.body;
     const product = await productModel.create({
       name,
+      title,
       description,
       price,
       images,
@@ -31,6 +32,7 @@ export default async function handle(req, res) {
     const {
       _id,
       name,
+      title,
       description,
       price,
       images,
@@ -40,7 +42,7 @@ export default async function handle(req, res) {
     } = req.body;
     const updatedProduct = await productModel.updateOne(
       { _id },
-      { name, description, price, images, properties, category, stock }
+      { name, description, price, images, properties, category, stock, title }
     );
     if (updatedProduct) {
       return res.json(true);

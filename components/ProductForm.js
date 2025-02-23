@@ -14,10 +14,12 @@ export default function ProductForm({
   images: existingImages,
   category: assignedCategory,
   properties: assignedProps,
-  stock: existingStock
+  stock: existingStock,
+  title: existingTitle
 }){
   const [name, setName] = useState(existingName || "");
   const [description, setDescription] = useState(existingDescription || "");
+  const [title, setTitle] = useState(existingTitle || "");
   const [price, setPrice] = useState(existingPrice || "");
   const [images, setImages] = useState(existingImages || []);
   const [isUploading, setIsUploading] = useState(false);
@@ -77,7 +79,7 @@ export default function ProductForm({
   const handleSubmit = async (e) => {
     const _id = router.query.id
     e.preventDefault()
-    const res = _id ? await axios.put('/api/products',{_id,name,description,price,images,category,properties: productProps, stock: productStock}) : await axios.post('/api/products',{name,description,price,images,category,properties: productProps, stock: productStock}) 
+    const res = _id ? await axios.put('/api/products',{_id,name,title,description,price,images,category,properties: productProps, stock: productStock}) : await axios.post('/api/products',{name,description,price,images,category,properties: productProps, stock: productStock}) 
     console.log(res.data)
     router.push('/products')
   }
@@ -155,6 +157,16 @@ export default function ProductForm({
             })}
         </div>
         )}
+        <div className = "flex flex-col w-52 gap-1">
+          <span>Product Title</span>
+          <input
+            type="text"
+            placeholder="Enter Product Title"
+            className=""
+            value={title}
+            onChange =  {e => setTitle(e.target.value)}
+          />
+        </div>
         <div className = "flex flex-col w-52 gap-1">
           <span>Product Description</span>
           <input
